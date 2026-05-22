@@ -7,10 +7,31 @@ services:
     image: ghcr.io/learnhouse/app:latest
     container_name: learnhouse-app
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
       - HOSTNAME=0.0.0.0
+      - LEARNHOUSE_DOMAIN=cursos.empadariadamari.com.br
+      - NEXT_PUBLIC_LEARNHOUSE_API_URL=https://cursos.empadariadamari.com.br/api/v1/
+      - NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL=https://cursos.empadariadamari.com.br/
+      - NEXT_PUBLIC_LEARNHOUSE_DOMAIN=cursos.empadariadamari.com.br
+      - NEXT_PUBLIC_LEARNHOUSE_TOP_DOMAIN=empadariadamari.com.br
+      - NEXT_PUBLIC_LEARNHOUSE_MULTI_ORG=False
+      - NEXT_PUBLIC_LEARNHOUSE_DEFAULT_ORG=default
+      - NEXT_PUBLIC_LEARNHOUSE_HTTPS=True
+      - NEXTAUTH_URL=https://cursos.empadariadamari.com.br
+      - NEXTAUTH_SECRET=9U3hvA...3Ao=
+      - LEARNHOUSE_SQL_CONNECTION_STRING="postgresql://learnhouse:learnhouse@db:5432/learnhouse"
+      - LEARNHOUSE_REDIS_CONNECTION_STRING=redis://redis:6379/learnhouse
+      - LEARNHOUSE_COOKIE_DOMAIN=.empadariadamari.com.br
+      - LEARNHOUSE_PORT=9000
+      - LEARNHOUSE_AUTH_JWT_SECRET_KEY=EqFk+Q...W9k=
+      - LEARNHOUSE_AUTH_JWT_ALGORITHM=HS256
+      - LEARNHOUSE_AUTH_JWT_EXPIRATION_TIME=86400
+      - LEARNHOUSE_INITIAL_ADMIN_EMAIL=admin@empadariadamari.com.br
+      - LEARNHOUSE_INITIAL_ADMIN_PASSWORD=admin123
+      - LEARNHOUSE_DEVELOPMENT_MODE=False
+      - LEARNHOUSE_LOGFIRE_ENABLED=False
+      - LEARNHOUSE_IS_AI_ENABLED=False
+      - LEARNHOUSE_CONTENT_DELIVERY_TYPE=filesystem
     depends_on:
       db:
         condition: service_healthy
@@ -49,18 +70,16 @@ services:
     image: postgres:16-alpine
     container_name: learnhouse-db
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-learnhouse}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-learnhouse}
-      - POSTGRES_DB=${POSTGRES_DB:-learnhouse}
+      - POSTGRES_USER=learnhouse
+      - POSTGRES_PASSWORD=learnhouse
+      - POSTGRES_DB=learnhouse
     volumes:
       - learnhouse_db_data:/var/lib/postgresql/data
     networks:
       - learnhouse-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-learnhouse}"]
+      test: ["CMD-SHELL", "pg_isready -U learnhouse"]
       interval: 5s
       timeout: 4s
       retries: 5
